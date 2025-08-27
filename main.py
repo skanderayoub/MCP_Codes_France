@@ -2,6 +2,7 @@ import json
 import nltk
 import os
 from src.code_processor import CodeProcessor
+import argparse
 
 try:
     nltk.data.find('tokenizers/punkt')
@@ -29,7 +30,11 @@ def load_config(config_path):
     return config
 
 if __name__ == "__main__":
-    config_path = "./configs/code_assurances.json"  # Change this to process different codes
-    config = load_config(config_path)
+    parser = argparse.ArgumentParser(description="Process French legal code PDFs")
+    parser.add_argument("--config", default="configs/code_assurances.json", 
+                        help="Path to configuration file")
+    args = parser.parse_args()
+
+    config = load_config(args.config)
     processor = CodeProcessor(config)
     processor.process()
