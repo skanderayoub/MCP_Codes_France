@@ -1,0 +1,35 @@
+{
+    "pdf_path": "data/input/code_assurances.pdf",
+    "txt_path": "data/output/code_assurances_raw.txt",
+    "json_path": "data/output/code_assurances.json",
+    "cleaning_patterns": [
+        "Code des assurances\\s*-\\s*Dernière modification le \\d{1,2} \\w+ \\d{4}\\s*-\\s*Document généré le \\d{1,2} \\w+ \\d{4}"
+    ],
+    "hierarchy_patterns": [
+        "(Partie législative|Partie réglementaire - Arrêtés|Partie réglementaire)",
+        "(^Livre [IVXLCDM]+.*$)",
+        "(^Titre [IVXLCDM]+.*$)",
+        "(^Chapitre [IVXLCDM]+.*$)",
+        "(^Section (?:[IVXLCDM]+|[0-9]+)+.*$)",
+        "(^Sous-section\\s+(?:[IVXLCDM]+|[0-9]+).*$)",
+        "(^Paragraphe\\s+\\d+(?:\\.\\d+)?\\s*:.*$)"
+    ],
+    "level_keys": ["partie", "livre", "titre", "chapitre", "section", "sous_section", "paragraphe"],
+    "article_pattern": "(Article\\s+[A-Z]\\*?\\d+(?:-\\d+)*)",
+    "content_patterns": [
+        "Partie législative",
+        "Partie réglementaire - Arrêtés",
+        "Partie réglementaire",
+        "Livre [IVXLCDM]+",
+        "Titre [IVXLCDM]+",
+        "Chapitre [IVXLCDM]+",
+        "Section (?:[IVXLCDM]+|[0-9]+)+",
+        "Sous-section\\s+(?:[IVXLCDM]+|[0-9]+)",
+        "Paragraphe\\s+\\d+(?:\\.\\d+)?\\s*:.*"
+    ],
+    "stop_words": ["le", "la", "les", "de", "du", "des", "et", "en", "pour", "par"],
+    "llm_config": {
+        "model": "llama3.2:1b",
+        "temperature": 0.1
+    }
+}
