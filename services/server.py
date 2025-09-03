@@ -295,7 +295,7 @@ if __name__ == "__main__":
         help="Server type (sse or stdio)"
     )
     parser.add_argument(
-        "--json_path", type=str, default=os.getenv("JSON_PATH", "data/output/code_assurances.json"),
+        "--json_path", type=str, default=os.getenv("JSON_PATH", "../data/output/code_assurances.json"),
         help="Path to JSON data file"
     )
     args = parser.parse_args()
