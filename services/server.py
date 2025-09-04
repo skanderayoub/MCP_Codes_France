@@ -36,6 +36,37 @@ class CodeServer:
         except Exception as e:
             logger.error(f"Error loading JSON data: {e}")
             raise
+    
+    def reload_json_file(self, file_path: str) -> str:        
+        """Reload data from a new JSON file.
+
+        Args:
+            query (str): The file to load. Only valid inputs are: 
+            [
+            "../data/output/code_assurances.json",
+            "../data/output/code_penal.json",
+            "../data/output/code_travail.json"
+            ]
+
+        Returns:
+            str: JSON string containing file load status.
+        """
+        valid_files = [
+            "../data/output/code_assurances.json",
+            "../data/output/code_penal.json",
+            "../data/output/code_travail.json"
+        ]
+        if file_path not in valid_files:
+            logger.error(f"Invalid file path: {file_path}")
+            return json.dumps({"error": f"Invalid file path. Choose from: {valid_files}"})
+        try:
+            self.json_path = file_path
+            self.code_data = self._load_code_data(file_path)
+            logger.info(f"Reloaded data from {file_path}")
+            return json.dumps({"message": f"Successfully switched to {file_path}"})
+        except Exception as e:
+            logger.error(f"Error reloading JSON file: {e}")
+            return json.dumps({"error": str(e)})
 
     def search_code(self, query: str, max_results: int = 10) -> str:
         """Search legal code articles for matches to the query.
@@ -255,11 +286,29 @@ class CodeServer:
     def register_tools(self):
         """Register tools with MCP."""
         @self.mcp.tool()
+        
         def search_code(query: str, max_results: int = 10) -> str:
+            """Search legal code articles for matches to the query.
+
+            Args:
+                query (str): The search query (article ID).
+                max_results (int): Maximum number of results to return.
+
+            Returns:
+                str: JSON string containing matching articles.
+            """
             return self.search_code(query, max_results)
         
         @self.mcp.tool()
         def get_article_by_id(article_id: str) -> str:
+            """Retrieve a specific article by its exact ID.
+
+            Args:
+                article_id (str): The exact article ID to retrieve, must begin with "Article".
+
+            Returns:
+                str: JSON string with the full article details or error if not found.
+            """
             return self.get_article_by_id(article_id)
         
         @self.mcp.tool()
@@ -280,7 +329,34 @@ class CodeServer:
         
         @self.mcp.tool()
         def traverse_hierarchy_tree(start_path: str = "", depth: int = 3) -> str:
+            """Retrieve a subtree or full hierarchy_tree.
+
+            Args:
+                start_path (str): Starting path in the hierarchy (default "" for full tree).
+                depth (int): Maximum depth to traverse (default 3).
+
+            Returns:
+                str: JSON string of the (sub)tree.
+            """
             return self.traverse_hierarchy_tree(start_path, depth)
+        
+        @self.mcp.tool()
+        def reload_json_file(file_path: str) -> str:
+            """Reload data from a new JSON file.
+
+            Args:
+                query (str): The file to load. Only valid inputs are: 
+                [
+                "../data/output/code_assurances.json",
+                "../data/output/code_penal.json",
+                "../data/output/code_travail.json"
+                ]
+
+            Returns:
+                str: JSON string containing file load status.
+            """
+            return self.reload_json_file(file_path)
+
 
     def run(self, server_type: str):
         """Run the MCP server."""
